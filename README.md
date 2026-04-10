@@ -17,6 +17,9 @@ Simula operações bancárias básicas.
 * **Encapsulamento de dados** (uso de modificadores como o 'private').
 * **Lógica de Validação**.
 * **Gerenciamento de objetos** em coleções.
+* Uso de **Array Dinâmico** Vector
+* Separar em **Pacotes**
+* **Subclasse e Superclasse**
 
 
 
