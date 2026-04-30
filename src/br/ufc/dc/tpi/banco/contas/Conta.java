@@ -1,10 +1,11 @@
 package br.ufc.dc.tpi.banco.contas;
 
-public class Conta {
+public class Conta extends ContaAbstrata{
 	private String numero;
 	private double saldo;
 	
 	public Conta (String numero) {
+		super(numero);
 		this.numero = numero;
 		saldo = 0;
 	}

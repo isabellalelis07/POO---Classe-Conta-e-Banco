@@ -12,26 +12,27 @@ package br.ufc.dc.tpi.banco;
 import java.util.Vector; //biblioteca do java
 
 import br.ufc.dc.tpi.banco.contas.Conta;
+import br.ufc.dc.tpi.banco.contas.ContaAbstrata;
 import br.ufc.dc.tpi.banco.contas.ContaPoupança;
 import br.ufc.dc.tpi.banco.contas.ContaEspecial;
 
 public class BancoVector {
-	private Vector<Conta> contas;
+	private Vector<ContaAbstrata> contas;
 	private double taxa = 0.2;
 	
 	public BancoVector() { //criando o vector
-		contas = new Vector<Conta>();
+		contas = new Vector<ContaAbstrata>();
 	}
 	
-	public void cadastrar(Conta conta) {
+	public void cadastrar(ContaAbstrata conta) {
 		contas.add(conta);
 	}
 	
-	private Conta procurar(String numero) {
+	private ContaAbstrata procurar(String numero) {
 		int i = 0;
 		boolean achou = false;
 		while ((!achou) && (i < contas.size())){
-			if(contas.get(i).equals(numero)) {
+			if(contas.get(i).getNumero().equals(numero)) {
 				achou = true;
 			} else {
 				i++;
@@ -45,7 +46,7 @@ public class BancoVector {
 	}
 	
 	public void debitar(String numero, double valor) {
-		Conta conta;
+		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
 			conta.debitar(valor);
@@ -55,7 +56,7 @@ public class BancoVector {
 	}
 	
 	public void creditar(String numero, double valor) {
-		Conta conta;
+		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
 			conta.creditar(valor);
@@ -65,8 +66,8 @@ public class BancoVector {
 	}
 	
 	public void transferir(String origem, String destino, double valor) {
-		Conta c1;
-		Conta c2;
+		ContaAbstrata c1;
+		ContaAbstrata c2;
 		
 		c1 = procurar(origem);
 		c2 = procurar(destino);
@@ -80,7 +81,7 @@ public class BancoVector {
 	}
 	
 	public void renderJuros(String numero) {
-		Conta conta;
+		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
 			if(conta instanceof ContaPoupança) {
@@ -95,7 +96,7 @@ public class BancoVector {
 	}
 	
 	public void renderBonus(String numero) {
-		Conta conta;
+		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
 			if(conta instanceof ContaEspecial) {

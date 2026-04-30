@@ -1,24 +1,24 @@
 package br.ufc.dc.tpi.banco;
 
-import br.ufc.dc.tpi.banco.contas.Conta;
+import br.ufc.dc.tpi.banco.contas.ContaAbstrata;
 import br.ufc.dc.tpi.banco.contas.ContaEspecial;
 import br.ufc.dc.tpi.banco.contas.ContaPoupança;
 
 public class BancoArray {
-	private Conta[] contas;
+	private ContaAbstrata[] contas;
 	private int indice = 0;
 	private double taxa = 0.2;
 	
 	public BancoArray(){
-		contas = new Conta[100];
+		contas = new ContaAbstrata[100];
 	}
 	
-	public void cadastrar(Conta conta) {
+	public void cadastrar(ContaAbstrata conta) {
 		contas[indice]= conta;
 		indice++;
 	}
 	
-	private Conta procurar(String numero) {
+	private ContaAbstrata procurar(String numero) {
 		int i = 0;
 		boolean achou = false;
 		while((!achou) && (i < indice)) {
@@ -36,7 +36,7 @@ public class BancoArray {
 	}
 	
 	public void debitar(String numero, double valor) {
-		Conta conta;
+		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
 			conta.debitar(valor);
@@ -46,7 +46,7 @@ public class BancoArray {
 	}
 	
 	public void creditar(String numero, double valor) {
-		Conta conta;
+		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
 			conta.creditar(valor);
@@ -56,7 +56,7 @@ public class BancoArray {
 	}
 	
 	public double saldo (String numero) {
-		Conta conta;
+		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
 			return conta.saldo();
@@ -66,8 +66,8 @@ public class BancoArray {
 	}
 	
 	public void transferir (String origem, String destino, double valor) {
-		Conta c1;
-		Conta c2;
+		ContaAbstrata c1;
+		ContaAbstrata c2;
 		c1 = procurar(origem);
 		c2 = procurar(destino);
 		if(c1 != null && c2 != null) {
@@ -79,7 +79,7 @@ public class BancoArray {
 	}
 	
 	public void renderJuros(String numero) {
-		Conta conta;
+		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
 			if(conta instanceof ContaPoupança) {
@@ -94,7 +94,7 @@ public class BancoArray {
 	}
 	
 	public void renderBonus(String numero) {
-		Conta conta;
+		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
 			if(conta instanceof ContaEspecial) {
