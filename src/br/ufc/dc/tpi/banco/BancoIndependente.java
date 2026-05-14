@@ -1,45 +1,35 @@
 package br.ufc.dc.tpi.banco;
 
-//ARRAY-> tem um número fixo, não poe mais adicionar
-//VECTOR -> array dinâmico, pode ir adicionando 
-
-//contas;add() -> adicionar conta para o vector
-//contas;get(indice) -> pega o item que etá naquela posição
-//contas.size() -> quantos itens tem guardados até o momento
-//contas.remove(objeto) -> tira um item da lista
-
-
-import java.util.Vector; //biblioteca do java
-
-import br.ufc.dc.tpi.banco.contas.Conta;
 import br.ufc.dc.tpi.banco.contas.ContaAbstrata;
-import br.ufc.dc.tpi.banco.contas.ContaPoupança;
 import br.ufc.dc.tpi.banco.contas.ContaEspecial;
+import br.ufc.dc.tpi.banco.contas.ContaPoupança;
 
-public class BancoVector {
-	private Vector<ContaAbstrata> contas;
+public class BancoIndependente implements IBanco {
+	private ContaAbstrata[] contas;
+	private int indice = 0;
 	private double taxa = 0.2;
 	
-	public BancoVector() { //criando o vector
-		contas = new Vector<ContaAbstrata>();
+	public BancoIndependente(){
+		contas = new ContaAbstrata[100];
 	}
 	
 	public void cadastrar(ContaAbstrata conta) {
-		contas.add(conta);
+		contas[indice]= conta;
+		indice++;
 	}
 	
-	private ContaAbstrata procurar(String numero) {
+	public ContaAbstrata procurar(String numero) {
 		int i = 0;
 		boolean achou = false;
-		while ((!achou) && (i < contas.size())){
-			if(contas.get(i).getNumero().equals(numero)) {
+		while((!achou) && (i < indice)) {
+			if(contas[i].numero().equals(numero)) { // metodo p/ fornecer uma comparação -> entra na casa e ve oq tem dentro
 				achou = true;
 			} else {
 				i++;
 			}
 		}
 		if(achou == true) {
-			return contas.get(i);
+			return contas[i];
 		} else {
 			return null;
 		}
@@ -65,18 +55,26 @@ public class BancoVector {
 		}
 	}
 	
-	public void transferir(String origem, String destino, double valor) {
+	public double saldo (String numero) {
+		ContaAbstrata conta;
+		conta = procurar(numero);
+		if(conta != null) {
+			return conta.saldo();
+		} else {
+			return -1;
+		}
+	}
+	
+	public void transferir (String origem, String destino, double valor) {
 		ContaAbstrata c1;
 		ContaAbstrata c2;
-		
 		c1 = procurar(origem);
 		c2 = procurar(destino);
-		
-		if((c1 != null) && (c2 != null)) {
+		if(c1 != null && c2 != null) {
 			c1.debitar(valor);
 			c2.creditar(valor);
 		} else {
-			System.out.println("Operação Inválida");
+			System.out.println("Operação inválida");
 		}
 	}
 	
@@ -110,5 +108,24 @@ public class BancoVector {
 		}
 		
 	}
+
+	@Override
+	public double saldoTotal() {
+		double saldoTotal = 0;
+		for(int i=0; i<indice; i++) {
+			ContaAbstrata conta = contas[i];
+			saldoTotal = saldoTotal + conta.saldo();
+		}
+		return saldoTotal;
+	}
+
+	@Override
+	public int numeroContas() {
+		return indice;
+	}
+
+	
+	
+	
 
 }
