@@ -2,6 +2,8 @@ package br.ufc.dc.tpi.banco.contas;
 
 import java.util.Vector;
 
+import br.ufc.dc.tpi.banco.exceptions.CIException;
+
 public class VectorContas implements IRepositorioConta {
 	private Vector<ContaAbstrata> contas;
 
@@ -12,7 +14,10 @@ public class VectorContas implements IRepositorioConta {
 	}
 
 	@Override
-	public void remover(String numero) {
+	public void remover(String numero) throws CIException{
+		ContaAbstrata conta;
+		conta = procurar(numero);
+		if(conta != null) { throw new CIException(numero);}
 		contas.remove(numero);
 	}
 

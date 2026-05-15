@@ -3,6 +3,8 @@ package br.ufc.dc.tpi.banco;
 import br.ufc.dc.tpi.banco.contas.ContaAbstrata;
 import br.ufc.dc.tpi.banco.contas.ContaEspecial;
 import br.ufc.dc.tpi.banco.contas.ContaPoupança;
+import br.ufc.dc.tpi.banco.exceptions.CIException;
+import br.ufc.dc.tpi.banco.exceptions.SIException;
 
 public class BancoIndependente implements IBanco {
 	private ContaAbstrata[] contas;
@@ -14,15 +16,22 @@ public class BancoIndependente implements IBanco {
 	}
 	
 	public void cadastrar(ContaAbstrata conta) {
-		contas[indice]= conta;
-		indice++;
+		String numeroDaConta = conta.numero();
+		ContaAbstrata contaExistente = procurar(numeroDaConta);
+		if(contaExistente == null) {
+			contas[indice]= conta;
+			indice++;
+		} else {
+			System.out.println("Erro: Esta conta já está cadastrada!");
+		}
+		
 	}
 	
 	public ContaAbstrata procurar(String numero) {
-		int i = 0;
 		boolean achou = false;
+		int i = 0;
 		while((!achou) && (i < indice)) {
-			if(contas[i].numero().equals(numero)) { // metodo p/ fornecer uma comparação -> entra na casa e ve oq tem dentro
+			if(contas[i].numero().equals(numero)) { 
 				achou = true;
 			} else {
 				i++;
@@ -32,53 +41,63 @@ public class BancoIndependente implements IBanco {
 			return contas[i];
 		} else {
 			return null;
+		
 		}
 	}
 	
-	public void debitar(String numero, double valor) {
+	public void debitar(String numero, double valor) throws CIException, SIException {
 		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
-			conta.debitar(valor);
+			if(conta.saldo() >= valor) {
+				conta.debitar(valor);
+			} else {
+				throw new SIException(conta.saldo(), numero);
+			}
 		} else {
-			System.out.println("Conta Inexistente");
+			throw new CIException(numero);
 		}
 	}
 	
-	public void creditar(String numero, double valor) {
+	public void creditar(String numero, double valor) throws CIException{
 		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
 			conta.creditar(valor);
 		} else {
-			System.out.println("Conta Inexistente");
+			throw new CIException(numero);
 		}
 	}
 	
-	public double saldo (String numero) {
+	public double saldo (String numero) throws CIException{
 		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
 			return conta.saldo();
 		} else {
-			return -1;
+			throw new CIException(numero);
 		}
 	}
 	
-	public void transferir (String origem, String destino, double valor) {
+	public void transferir (String origem, String destino, double valor) throws CIException, SIException {
 		ContaAbstrata c1;
 		ContaAbstrata c2;
 		c1 = procurar(origem);
 		c2 = procurar(destino);
-		if(c1 != null && c2 != null) {
-			c1.debitar(valor);
-			c2.creditar(valor);
-		} else {
-			System.out.println("Operação inválida");
+		if(c1 == null) {
+			throw new CIException(origem);
 		}
+		if(c2 == null) {
+			throw new CIException(destino);
+		}
+		if(c1.saldo() < valor) {
+			throw new SIException(c1.saldo(), origem);
+		}
+		c1.debitar(valor);
+		c2.creditar(valor);
 	}
 	
-	public void renderJuros(String numero) {
+	public void renderJuros(String numero) throws CIException{
 		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
@@ -89,11 +108,11 @@ public class BancoIndependente implements IBanco {
 				System.out.println("Essa conta não é poupança");
 			}
 		} else {
-			System.out.println("Essa conta não existe");
+			throw new CIException(numero);
 		}
 	}
 	
-	public void renderBonus(String numero) {
+	public void renderBonus(String numero) throws CIException {
 		ContaAbstrata conta;
 		conta = procurar(numero);
 		if(conta != null) {
@@ -104,7 +123,7 @@ public class BancoIndependente implements IBanco {
 				System.out.println("Essa conta não é especial");
 			}
 		} else {
-			System.out.println("Essa conta não existe");
+			throw new CIException(numero);
 		}
 		
 	}

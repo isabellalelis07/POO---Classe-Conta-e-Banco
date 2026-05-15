@@ -1,5 +1,7 @@
 package br.ufc.dc.tpi.banco.contas;
 
+import br.ufc.dc.tpi.banco.exceptions.CIException;
+
 public class ArrayContas implements IRepositorioConta {
 	private ContaAbstrata[] contas;
 	private int indice;
@@ -11,12 +13,15 @@ public class ArrayContas implements IRepositorioConta {
 	}
 
 	@Override
-	public void remover(String numero) {
+	public void remover(String numero) throws CIException {
+		ContaAbstrata conta;
+		conta = procurar(numero);
+		if(conta == null) {throw new CIException(numero);}
 		for(int i = 0; i<indice; i++){
 			if(contas[i].getNumero().equals(numero)) {
 				contas[i] = contas[indice-1];
 				contas[indice-1] = null;
-				indice--;
+				indice --;
 			}
 		}
 
